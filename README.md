@@ -4,7 +4,7 @@ docusaurus-shared-components
 ## Add Remote
 
 ```bash
-git remote add shared-scripts https://github.com/ruseleredu/docusaurus-shared-components.git
+git remote add shared-components https://github.com/ruseleredu/docusaurus-shared-components.git
 ```
 
 ## Add Subtrees
