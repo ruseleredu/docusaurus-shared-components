@@ -10,7 +10,7 @@ git remote add shared-components https://github.com/ruseleredu/docusaurus-shared
 ## Add Subtrees
 
 ```bash
-git subtree add --prefix=src/components/common shared-components main --squash
+git subtree add --prefix=src/components/shared shared-components main --squash
 ```
 
 ## List existing remotes
