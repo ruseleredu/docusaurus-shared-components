@@ -98,6 +98,16 @@ Free and Open-source warehouse/manufacturing development framework and simulator
 
 - https://github.com/Open-Industry-Project/Open-Industry-Project
 
+The Protocol dropdown provides seven options:
+
+- ab_eip — Ethernet/IP communication via the libplctag library
+- modbus_tcp — Modbus TCP communication via the libplctag library
+- opc_ua — OPC UA communication via the open62541 library
+- siemens put/get — S7 communication
+- ads — Beckhoff ADS communication for TwinCAT 2 & 3 runtimes
+- rtde — Universal Robots Real-Time Data Exchange (port 30004) for UR cobots and URSim
+- mqtt — MQTT 3.1.1 over plaintext TCP via Eclipse Paho. The "Broker" field accepts host, host:port, or a full tcp://host:port URI (port defaults to 1883). The "Client ID" field is optional (auto-generated if empty). The "Auth" field accepts user:password for brokers that require authentication; leave empty for anonymous.
+
 ## JaamSim
 
 Leading Edge Simulation
