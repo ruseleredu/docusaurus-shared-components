@@ -163,6 +163,18 @@ export const labData: LabRow[] = [
         end: "15-Jun-2026",
         conteudo: "Assembly do ESP32: ver, ler e medir;",
     },
+    {
+        tarefa: "LAB12",
+        hrefi: "/labs/lab12",
+        hrefe: "https://moodle.utfpr.edu.br/mod/assign/view.php?id=1889891", // external
+        templateLabel: "TPL12",
+        templateHrefi: "/tpls/tpl12",
+        templateHrefe: "https://github.com/ELT73A-S22-2026-2/lab11-template",
+
+        start: "08-Jun-2026",
+        end: "15-Jun-2026",
+        conteudo: "depuração com GDB no Wokwi for VS Code;",
+    },
 
 ];
 // src/components/LabTable.tsx
