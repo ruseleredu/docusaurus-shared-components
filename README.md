@@ -1,106 +1,69 @@
-# Website
+# docusaurus-shared-components
+docusaurus-shared-components
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
-
-## Installation
-
+## Add Remote
 
 ```bash
-npx create-docusaurus@latest stm32doc classic --typescript
+git remote add shared-components https://github.com/ruseleredu/docusaurus-shared-components.git
 ```
 
-[Diagrams](https://docusaurus.io/docs/markdown-features/diagrams)
+## Add Subtrees
 
 ```bash
-npm install --save @docusaurus/theme-mermaid
+git subtree add --prefix=src/components/shared shared-components main --squash
 ```
 
-[Math Equations](https://docusaurus.io/docs/markdown-features/math-equations)
+## List existing remotes
 
 ```bash
-npm install --save remark-math@6 rehype-katex@7
+git remote -v
 ```
 
-[Emoji](https://www.npmjs.com/package/remark-emoji)
-
-- https://emojidb.org/remark-emojis
+## Pull Updates
 
 ```bash
-npm install remark-emoji
+git subtree pull --prefix=src/components/shared shared-components main --squash
 ```
 
-## Clone repo
+## Push Changes
 
 ```bash
-git clone https://github.com/ruseleredu/stm32doc.git
-cd stm32doc
-npm i
+git subtree push --prefix=src/components/shared shared-components main
 ```
 
-## Local Development
+## Reset all tracked files to match the latest commit:
 
 ```bash
-npm run start
+git reset --hard HEAD
 ```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
+## Substituir totalmente o conteúdo do subtree pelo remoto sem merge
 
 ```bash
-npm run build
+git rm -r src/components/shared
+git commit -m "Remove local shared-components subtree"
+
+git subtree add --prefix=src/components/shared shared-components main --squash
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Se houver mais conflitos:
 
 ```bash
-npm run serve
+git checkout --theirs .
+git add .
+git commit -m "Accept subtree version"
 ```
 
-## Deployment
+## Remove remote
 
 ```bash
-set GIT_USER=ruseleredu
-npm run deploy
+git remote remove shared-components
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
-
-## Clean Cache
+## Add another remote
 
 ```bash
-npm run clear
+git remote add shared-scripts https://github.com/ruseleredu/docusaurus-shared-scripts.git
 ```
 
-## 🛠️ Upgrade Docusaurus
+---
 
-To upgrade Docusaurus packages with the latest version, run the following command:
-
-```bash
-npm i @docusaurus/core@latest @docusaurus/preset-classic@latest @docusaurus/theme-mermaid@latest @docusaurus/module-type-aliases@latest @docusaurus/tsconfig@latest @docusaurus/types@latest
-```
-
-To ensure accurate Baseline data, please update:
-```bash
-npm i baseline-browser-mapping@latest -D
-```
-
-```bash
-npm audit fix
-```
-
-## Upgrade groups status
-
-```bash
-node scripts/check-groups.js 2026-1
-```
-
-### Cria template do lab e repos por grupo:
-
-```bash
-./scripts/mic/create-lab-template.sh
-```
-
-```bash
-./scripts/mic/create-lab-from-template.sh
-```

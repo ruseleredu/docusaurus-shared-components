@@ -2,22 +2,57 @@ import React from 'react';
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import ThemeCodeBlock from '@theme/CodeBlock';
-// import Admonition from '@theme/Admonition';
+import Admonition from '@theme/Admonition';
 import Details from '@theme/Details';
 import Link from '@docusaurus/Link';
 
 // import {VerifyDev1,VerifyDev1} from '@site/src/components/InstructionsSite';
 /*
-<Link to="/docs/stm32cubemx">STM32CubeMX</Link>
-<Link to="/docs/stm32cubeclt">STM32CubeCLT</Link>
-<Link to="/docs/stm32cubeprg">STM32CubeProg</Link>
-<Link to="/docs/stm32cubemon">STM32CubeMonitor</Link>
-<Link to="/docs/stm32cubeide">STM32CubeIDE</Link>
 <Link to="/docs/git">git</Link>
 <Link to="/docs/github-cli">GitHub CLI</Link>
 <Link to="/docs/vs-code">Visual Studio Code</Link>
-<Link to="/docs/stm32cubetools">STM32Cube Tools</Link>
 */
+
+// ---------------------------------------------------------------------------
+// <LabSetup /> — bloco "Antes de começar" (topo do lab)
+// ---------------------------------------------------------------------------
+export function LabSetup({ intro = '/labs/intro' } = {}) {
+    return (
+        <Admonition type="info" title="Antes de começar">
+            <p>
+                Confira o ambiente (faça a <b>configuração uma vez por máquina</b>; a
+                verificação, a cada aula):
+            </p>
+            <p>Verificação rápida das versões instaladas:</p>
+            <ThemeCodeBlock language="bash">
+                git -v &amp; gh --version &amp; code -v &amp; py --version &amp; pio --version &amp; wokwi-cli -V &amp; wsl --version &amp; docker --version
+            </ThemeCodeBlock>
+            <p>Verificação rápida de autenticação e alias:</p>
+            <ThemeCodeBlock language="bash">
+                git config --get-regexp "^(user|alias)\." &amp; gh auth status &amp; code --list-extensions --profile "ESP32IO"
+            </ThemeCodeBlock>
+            <p>Adicionar o comando <code>git conferir</code>:</p>
+            <ThemeCodeBlock language="bash">
+                {`git config --global alias.conferir "!f() { r=$(pwd -W 2>/dev/null || pwd); echo raiz do repositorio: $r; test -z $GIT_PREFIX || echo ATENCAO: o terminal esta em $GIT_PREFIX, fora da raiz. Antes do git add, rode: cd /d $r; test $# -eq 0 && return; for a in $@; do if [ -e $a ]; then echo ok $a; else echo FALTA $a; fi; done; echo == mudancas desde o ultimo commit:; git status --short --ignored -- $@; }; f"`}
+            </ThemeCodeBlock>
+        </Admonition>
+    );
+}
+
+// ---------------------------------------------------------------------------
+// <LabLogout /> — bloco "Ao terminar" (fim do lab; máquina compartilhada)
+// ---------------------------------------------------------------------------
+export function LabLogout({ intro = '/labs/intro' } = {}) {
+    return (
+        <Admonition type="warning" title="Ao terminar — máquina de laboratório">
+            <p>
+                Antes de sair, faça <Link to={`${intro}#logout`}>logout</Link> para não
+                deixar sua conta do GitHub ativa na máquina (limpa a credencial salva do
+                git e encerra a sessão do <code>gh</code>).
+            </p>
+        </Admonition>
+    );
+}
 
 // import {VerifyDev1} from '@site/src/components/InstructionsSite';
 // <!-- Verifique o seu ambiente dev, git, gh e code -->
@@ -25,31 +60,18 @@ import Link from '@docusaurus/Link';
 export function VerifyDev1() {
     return (
         <div>
-            <Details summary={<summary>Verifique o seu ambiente de desenvolvimento!</summary>}>
-                <p>Versão do <Link to="/docs/git">git</Link> e configurações:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git --version
-                </ThemeCodeBlock>
-                <ThemeCodeBlock className="language-bash">
-                    git config --list --show-origin
-                </ThemeCodeBlock>
-
-                <p>Versão do <Link to="/docs/github-cli">GitHub CLI</Link> e status de login:</p>
-                <ThemeCodeBlock className="language-bash">
-                    gh --version
-                </ThemeCodeBlock>
-                <ThemeCodeBlock className="language-bash">
-                    gh auth status
-                </ThemeCodeBlock>
-
-                <p>Versão do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> e extensões instaladas:</p>
-                <ThemeCodeBlock className="language-bash">
-                    code -v
-                </ThemeCodeBlock>
-                <ThemeCodeBlock className="language-bash">
-                    code --list-extensions --profile "ESP32IO"
-                </ThemeCodeBlock>
-            </Details>
+            <p>Versão do <Link to="/docs/git">git</Link> e configurações:</p>
+            <ThemeCodeBlock className="language-bash">
+                git --version &amp;&amp; git config --list --show-origin
+            </ThemeCodeBlock>
+            <p>Versão do <Link to="/docs/github-cli">GitHub CLI</Link> e status de login:</p>
+            <ThemeCodeBlock className="language-bash">
+                gh --version &amp;&amp; gh auth status
+            </ThemeCodeBlock>
+            <p>Versão do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> e extensões instaladas:</p>
+            <ThemeCodeBlock className="language-bash">
+                code -v &amp;&amp; code --list-extensions --profile "ESP32IO"
+            </ThemeCodeBlock>
         </div >
     );
 }
@@ -82,6 +104,9 @@ export function VerifyDev2() {
                     code -v
                 </ThemeCodeBlock>
                 <ThemeCodeBlock className="language-bash">
+                    code --profile "ESP32IO"
+                </ThemeCodeBlock>
+                <ThemeCodeBlock className="language-bash">
                     code --list-extensions --profile "ESP32IO"
                 </ThemeCodeBlock>
 
@@ -103,50 +128,274 @@ export function VerifyDev2() {
 export function GitConfig() {
     return (
         <div>
-            <Details summary={<summary>Configure a ferramenta git</summary>}>
-                <p>Configure o nome de usuário para todos os repositórios locais ligados às suas transações de commit:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global user.name "Your Name"
-                </ThemeCodeBlock>
+            <p>Configure o nome de usuário para todos os repositórios locais ligados às suas transações de commit:</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global user.name "Your Name"
+            </ThemeCodeBlock>
 
-                <p> Configure o email de usuário para todos os repositórios locais ligados às suas transações de commit:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global user.email "you@example.com"
-                </ThemeCodeBlock>
+            <p> Configure o email de usuário para todos os repositórios locais ligados às suas transações de commit:</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global user.email "you@example.com"
+            </ThemeCodeBlock>
 
-                <p>É recomendado verificar se a instalação do seu Git não está realizando nenhuma transformação entre LFs e CRLFs.</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global core.autocrlf false
-                </ThemeCodeBlock>
+            <p>Adicionar o comando <code>git conferir</code>:</p>
+            <ThemeCodeBlock language="bash">
+                {`git config --global alias.conferir "!f() { r=$(pwd -W 2>/dev/null || pwd); echo raiz do repositorio: $r; test -z $GIT_PREFIX || echo ATENCAO: o terminal esta em $GIT_PREFIX, fora da raiz. Antes do git add, rode: cd /d $r; test $# -eq 0 && return; for a in $@; do if [ -e $a ]; then echo ok $a; else echo FALTA $a; fi; done; echo == mudancas desde o ultimo commit:; git status --short --ignored -- $@; }; f"`}
+            </ThemeCodeBlock>
 
-                <p>Configure o <Link to="/docs/git">git</Link> para usar o <Link to="/docs/vs-code-intro">Visual Studio Code</Link> como editor padrão para tarefas como escrever mensagens de commit ou rebases interativos</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global core.editor "code --wait"
-                </ThemeCodeBlock>
+            <p>É recomendado verificar se a instalação do seu Git não está realizando nenhuma transformação entre LFs e CRLFs.</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global core.autocrlf false
+            </ThemeCodeBlock>
 
-                <p>Habilite a coloração automática da saída da linha de comando do <Link to="/docs/git">Git</Link>:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global color.ui auto
-                </ThemeCodeBlock>
+            <p>Configure o <Link to="/docs/git">git</Link> para usar o <Link to="/docs/vs-code-intro">Visual Studio Code</Link> como editor padrão para tarefas como escrever mensagens de commit ou rebases interativos</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global core.editor "code --wait"
+            </ThemeCodeBlock>
 
-                <p>Configura o <Link to="/docs/git">Git</Link> para usar main como o nome do branch padrão sempre que você inicializar um novo repositório localmente:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --global init.defaultBranch main
-                </ThemeCodeBlock>
+            <p>Habilite a coloração automática da saída da linha de comando do <Link to="/docs/git">Git</Link>:</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global color.ui auto
+            </ThemeCodeBlock>
 
-                <p>Liste as configurações aplicadas:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git config --list --show-origin
-                </ThemeCodeBlock>
-            </Details>
+            <p>Configura o <Link to="/docs/git">Git</Link> para usar main como o nome do branch padrão sempre que você inicializar um novo repositório localmente:</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --global init.defaultBranch main
+            </ThemeCodeBlock>
+
+            <p>Liste as configurações aplicadas:</p>
+            <ThemeCodeBlock className="language-bash">
+                git config --list --show-origin
+            </ThemeCodeBlock>
         </div >
     );
 }
 
 // import {DevTools} from '@site/src/components/InstructionsSite';
-// <!-- List of Dev Tools -->
+// <!-- Lista de Ferramentas de Desenvolvimento -->
 // <DevTools />
 export function DevTools() {
+    return (
+        <Tabs>
+            <TabItem value="git-scm" label="Git SCM" default>
+                <p><b>O <Link to="/docs/git">Git</Link> é a ferramenta de gerenciamento de código-fonte mais utilizada por desenvolvedores profissionais.</b></p>
+                <ul>
+                    <li>O <a href="https://git-scm.com/downloads/win" target="_blank">Git</a> é um sistema de controle de versão distribuído gratuito e de código aberto, projetado para lidar com tudo, desde projetos pequenos até muito grandes, com rapidez e eficiência.
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    winget install --id Git.Git -e --source winget
+                </ThemeCodeBlock>
+                <p>Configurações do <Link to="/docs/git">git</Link>:</p>
+                <ThemeCodeBlock className="language-bash">
+                    git config --list --show-origin
+                </ThemeCodeBlock>
+            </TabItem>
+            <TabItem value="gh" label="GitHub CLI">
+                <p><b>O <Link to="/docs/github-cli">GitHub CLI</Link> traz o GitHub para o seu terminal.</b></p>
+                <ul>
+                    <li>O <a href="https://cli.github.com/" target="_blank">GitHub CLI</a> é uma ferramenta de linha de comando que permite interagir com o GitHub diretamente pelo terminal. Está disponível para Windows, macOS e Linux.
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    winget install --id GitHub.cli -e --source winget
+                </ThemeCodeBlock>
+                <p>Status de login do <Link to="/docs/github-cli">GitHub CLI</Link>:</p>
+                <ThemeCodeBlock className="language-bash">
+                    gh auth status
+                </ThemeCodeBlock>
+            </TabItem>
+            <TabItem value="py" label="Python">
+                <p><b>O <a href="https://www.python.org/" target="_blank">Python</a> é uma linguagem de programação que permite trabalhar com rapidez e integrar sistemas de forma mais eficaz.</b></p>
+                <ul>
+                    <li>O <a href="https://www.python.org/" target="_blank">Python</a> pode ser instalado via winget:
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    winget install Python.Python.3.14
+                </ThemeCodeBlock>
+                <ul>
+                    <li><p>Verifique a versão instalada:</p>
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    py --version && python --version && pip --version
+                </ThemeCodeBlock>
+                <ul>
+                    <li><p>Instale as dependências utilizadas no curso:</p>
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    py -m pip install bcrypt
+                </ThemeCodeBlock>
+            </TabItem>
+            <TabItem value="vscode" label="VS Code">
+                <p><b><Link to="/docs/vs-code-intro">Visual Studio Code</Link>: IDE e Editor de Código para Desenvolvimento de Software.</b></p>
+                <ul>
+                    <li>O <a href="https://code.visualstudio.com/download" target="_blank">VS Code</a> é um editor de código-fonte gratuito criado pela Microsoft para Windows, Linux e macOS. Inclui suporte para depuração, controle Git integrado, realce de sintaxe, conclusão inteligente de código, snippets e refatoração de código.
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    winget install --id Microsoft.VisualStudioCode -e --source winget
+                </ThemeCodeBlock>
+                <p>Extensões instaladas do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> para o perfil ESP32IO:</p>
+                <ThemeCodeBlock className="language-bash">
+                    code --list-extensions --profile "ESP32IO"
+                </ThemeCodeBlock>
+                <p>Configurar o terminal do VS Code. No arquivo <code>.vscode/settings.json</code></p>
+                <ThemeCodeBlock className="language-json">
+                    {`{
+    "terminal.integrated.defaultProfile.windows": "Command Prompt"
+}`}
+                </ThemeCodeBlock>
+
+            </TabItem>
+
+            <TabItem value="esp32-platformio" label="PlatformIO">
+                <p><b><Link to="/docs/platformio-intro">PlatformIO IDE para VSCode</Link>: Sua porta de entrada para a excelência no desenvolvimento de software embarcado.</b></p>
+                <ul>
+                    <li><a href="https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide" target="_blank">PlatformIO IDE para VSCode</a> Desbloqueie o verdadeiro potencial do desenvolvimento de software embarcado com o ecossistema colaborativo do PlatformIO, adotando princípios declarativos, metodologias orientadas a testes e toolchains modernas para um sucesso incomparável.
+
+                        <ThemeCodeBlock className="language-bash">
+                            code --install-extension platformio.platformio-ide --profile "ESP32IO"
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Torne o comando <code>pio</code> disponível no sistema:</p>
+                        <p>Você precisa editar a variável de ambiente do sistema chamada <b>Path</b> e adicionar o caminho <b>%USERPROFILE%\.platformio\penv\Scripts\</b> no início da lista.</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`%USERPROFILE%\\.platformio\\penv\\Scripts\\`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Inicie o projeto no PlatformIO (Arduino):</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`pio project init -b esp32dev -O "framework=arduino" -O "monitor_speed=115200" --ide vscode --sample-code`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Inicie o projeto no PlatformIO (Espressif):</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`pio project init -b esp32dev -O "framework=espidf" -O "monitor_speed=115200" --ide vscode --sample-code`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>System Prune:</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`pio system prune -f`}
+                        </ThemeCodeBlock>
+                    </li>
+                </ul>
+            </TabItem>
+            <TabItem value="esp32-wokwi" label="Wokwi">
+                <p><b><Link to="/docs/category/wokwi">Wokwi para VSCode</Link>: Simulador de sistemas embarcados e IoT com suporte para ESP32.</b></p>
+                <ul>
+                    <li><a href="https://marketplace.visualstudio.com/items?itemName=Wokwi.wokwi-vscode" target="_blank">Wokwi para VSCode</a> executa a simulação dentro do VS Code, utilizando os binários compilados pelo PlatformIO.
+                    </li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    code --install-extension wokwi.wokwi-vscode --profile "ESP32IO"
+                </ThemeCodeBlock>
+                <ul>
+                    <li><a href="https://wokwi.com/license?v=3.6.1&r=UserRequest&s=v" target="_blank">Gerar uma licença pessoal de 30 dias para o Wokwi VS Code.</a></li>
+                </ul>
+                <ul>
+                    <li><a href="https://github.com/wokwi/wokwi-cli/releases" target="_blank">Wokwi CLI:</a> Baixe via GitHub.</li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    {`curl -L -o "%USERPROFILE%\\.platformio\\penv\\Scripts\\wokwi-cli.exe" "https://github.com/wokwi/wokwi-cli/releases/latest/download/wokwi-cli-win-x64.exe"`}
+                </ThemeCodeBlock>
+                <ThemeCodeBlock className="language-bash">
+                    {`wokwi-cli -h`}
+                </ThemeCodeBlock>
+                <ul>
+                    <li>Obtenha seu token em <a href="https://wokwi.com/dashboard/ci" target="_blank">https://wokwi.com/dashboard/ci</a></li>
+                </ul>
+                <ThemeCodeBlock className="language-bash">
+                    setx WOKWI_CLI_TOKEN "wok_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                </ThemeCodeBlock>
+                <ul>
+                    <li><a href="https://docs.wokwi.com/wokwi-ci/getting-started" target="_blank">Wokwi para CI e GitHub Actions</a></li>
+                </ul>
+            </TabItem>
+            <TabItem value="esp32-drivers" label="Drivers">
+                <ol>
+                    <li>Conecte o ESP32 ao computador via USB.</li>
+                    <li>
+                        Abra o <b>Gerenciador de Dispositivos</b> (clique com o botão direito no Menu Iniciar &rarr; Gerenciador de Dispositivos).
+                    </li>
+                    <li>Expanda a seção <b>Portas (COM e LPT)</b>.</li>
+                    <li>
+                        Procure por um dispositivo similar a:
+                        <ul>
+                            <li>
+                                <a href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads" target="_blank" rel="noopener noreferrer">
+                                    Silicon Labs CP210x USB to UART Bridge (COMx)
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.wch-ic.com/downloads/CH341SER_ZIP.html" target="_blank" rel="noopener noreferrer">
+                                    Driver Windows CH340/CH341 USB para porta serial
+                                </a>
+                            </li>
+                            <li>FTDI ou &ldquo;Dispositivo Serial USB (COMx)&rdquo;</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>
+                    Anote o número da porta (ex: <b>COM4</b>, <b>COM6</b>, <b>COM12</b>). Se não aparecer nenhuma porta nova, o driver não está instalado. Baixe o driver correspondente (CP210x ou CH340) no site do fabricante da placa.
+                </p>
+                <ThemeCodeBlock className="language-bash">
+                    pip install esptool
+                </ThemeCodeBlock>
+                <ThemeCodeBlock className="language-bash">
+                    esptool chip-id
+                </ThemeCodeBlock>
+            </TabItem>
+            <TabItem value="esp32-docker" label="Docker">
+                <p><b><Link to="/labs/guides/instalacao-docker-wsl2">Docker Desktop & WSL 2</Link>: O Docker Desktop no Windows 11 utiliza a arquitetura do WSL 2 para executar containers Linux nativamente com alta performance.</b></p>
+                <ul>
+                    <li>
+                        <p>Habilitação e Atualização do WSL 2:</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`wsl --install`}
+                        </ThemeCodeBlock>
+                        <ThemeCodeBlock className="language-bash">
+                            {`wsl --update && wsl --set-default-version 2`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Instalação do Docker Desktop via Winget:</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`winget install --id Docker.DockerDesktop -e`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Confirme no terminal integrado do VS Code:</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`wsl --version && docker --version && docker compose version`}
+                        </ThemeCodeBlock>
+                    </li>
+                    <li>
+                        <p>Teste de MQTT com mosquitto:</p>
+                        <ThemeCodeBlock className="language-bash">
+                            {`docker run --rm eclipse-mosquitto:2 mosquitto_sub -h test.mosquitto.org -t "esp32iot/labtest"`}
+                        </ThemeCodeBlock>
+                        <ThemeCodeBlock className="language-bash">
+                            {`docker run --rm eclipse-mosquitto:2 mosquitto_pub -h test.mosquitto.org -t "esp32iot/labtest" -m "Hello from Docker!"`}
+                        </ThemeCodeBlock>
+                    </li>
+                </ul>
+            </TabItem>
+        </Tabs>
+    );
+}
+
+
+// import {DevTools} from '@site/src/components/InstructionsSite';
+// <!-- List of Dev Tools -->
+// <DevToolsV01 />
+export function DevToolsV01() {
     return (
         <Tabs>
             <TabItem value="git-scm" label="Git SCM" default>
@@ -164,9 +413,9 @@ export function DevTools() {
                 </ThemeCodeBlock>
             </TabItem>
             <TabItem value="gh" label="GitHub CLI">
-                <p><b><Link to="/docs/github-cli">GitHub CLI</Link> brings GitHub to your terminal.</b></p>
+                <p><b>O <Link to="/docs/github-cli">GitHub CLI</Link> traz o GitHub para o seu terminal.</b></p>
                 <ul>
-                    <li><a href="https://cli.github.com/" target="_blank">GitHub CLI</a> is a command line tool that allows you to interact with GitHub from the command line. It is available for Windows, macOS, and Linux.
+                    <li>O <a href="https://cli.github.com/" target="_blank">GitHub CLI</a> é uma ferramenta de linha de comando que permite interagir com o GitHub diretamente pelo terminal. Está disponível para Windows, macOS e Linux.
                     </li>
                 </ul>
                 <ThemeCodeBlock className="language-bash">
@@ -186,9 +435,13 @@ export function DevTools() {
                 <ThemeCodeBlock className="language-bash">
                     winget install --id Microsoft.VisualStudioCode -e --source winget
                 </ThemeCodeBlock>
-                <p>Extensões instaladas do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> para o perfil STM32:</p>
+                <p>Crie o perfil ESP32IO:</p>
                 <ThemeCodeBlock className="language-bash">
-                    code --list-extensions --profile "STM32"
+                    code --profile "ESP32IO"
+                </ThemeCodeBlock>
+                <p>Extensões instaladas do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> para o perfil ESP32IO:</p>
+                <ThemeCodeBlock className="language-bash">
+                    code --list-extensions --profile "ESP32IO"
                 </ThemeCodeBlock>
             </TabItem>
         </Tabs>
@@ -240,17 +493,17 @@ export function DevToolsv2() {
                 </ThemeCodeBlock>
                 <p>Extensões instaladas do <Link to="/docs/vs-code-intro">Visual Studio Code</Link> para o perfil STM32:</p>
                 <ThemeCodeBlock className="language-bash">
-                    code --list-extensions --profile "STM32"
+                    code --list-extensions --profile "ESP32IO"
                 </ThemeCodeBlock>
             </TabItem>
-            <TabItem value="stm32-vscode-extension" label="STM32CubeIDE">
-                <p><b><Link to="/docs/stm32-vscode-extension">STM32CubeIDE for Visual Studio Code</Link>: development experience for STM32 microcontrollers.</b></p>
+            <TabItem value="esp32-wokwi" label="Wokwi">
+                <p><b><Link to="/docs/category/wokwi">Wokwi for VSCode</Link>: Embedded systems and IoT simulator supporting ESP32, Arduino, and the Raspberry Pi Pico.</b></p>
                 <ul>
-                    <li><a href="https://marketplace.visualstudio.com/items?itemName=stmicroelectronics.stm32-vscode-extension" target="_blank">STM32CubeIDE for Visual Studio Code</a> is designed to enhance the development experience for STM32 microcontrollers by providing a comprehensive and updatable set of tools. The extension pack allow users to install one single pack bringing a full ESP32 IDE experience into VS Code.
+                    <li><a href="https://marketplace.visualstudio.com/items?itemName=Wokwi.wokwi-vscode" target="_blank">Wokwi for VSCode</a> Your code never leaves your computer - Wokwi runs the simulation inside VS Code, using the firmware binaries from your project.
                     </li>
                 </ul>
                 <ThemeCodeBlock className="language-bash">
-                    code --install-extension stmicroelectronics.stm32-vscode-extension --profile "ESP32IO"
+                    code --install-extension wokwi.wokwi-vscode --profile "ESP32IO"
                 </ThemeCodeBlock>
             </TabItem>
             <TabItem value="stm32-platformio" label="PlatformIO">
@@ -275,28 +528,13 @@ export function DevToolsv2() {
 export function GitLogOut() {
     return (
         <div>
-            <Details summary={<summary>Faça Logout do seu ambiente de desenvolvimento!</summary>}>
-                <p>Para o <Link to="/docs/git">git</Link> "esquecer" suas informações salvas:</p>
-                <ThemeCodeBlock className="language-bash">
-                    git credential-manager erase
-                </ThemeCodeBlock>
-                <p>Ou liste suas credenciais:</p>
-                <ThemeCodeBlock className="language-bash">
-                    cmdkey /list | findstr "github"
-                </ThemeCodeBlock>
-                <p>Exclua a credencial:</p>
-                <ThemeCodeBlock className="language-bash">
-                    cmdkey /delete:git:https://github.com
-                </ThemeCodeBlock>
-                <p>Logout do <Link to="/docs/github-cli">GitHub CLI</Link>:</p>
-                <ThemeCodeBlock className="language-bash">
-                    gh auth logout
-                </ThemeCodeBlock>
-            </Details>
+            <p>Para o <Link to="/docs/git">git</Link> "esquecer" suas informações salvas:</p>
+            <ThemeCodeBlock className="language-bash">
+                git credential-manager erase &amp;&amp; cmdkey /list | findstr "github" &amp;&amp; gh auth logout
+            </ThemeCodeBlock>
         </div >
     );
 }
-
 
 // import {GitCommit} from '@site/src/components/InstructionsSite';
 // <!-- Configure o git -->
@@ -309,27 +547,22 @@ export function GitCommit() {
                 <ThemeCodeBlock className="language-bash">
                     git status
                 </ThemeCodeBlock>
-
                 <p>Adicione os arquivos modificados:</p>
                 <ThemeCodeBlock className="language-bash">
                     git add .
                 </ThemeCodeBlock>
-
                 <p>Realize o <Link to="/docs/git-best-practices">commit</Link> das alterações:</p>
                 <ThemeCodeBlock className="language-bash">
                     git commit -m "Descrição breve das alterações realizadas!"
                 </ThemeCodeBlock>
-
                 <p>Envie para o repositório remoto (GitHub):</p>
                 <ThemeCodeBlock className="language-bash">
                     git push
                 </ThemeCodeBlock>
-
                 <p>Vizualize o log de alterações:</p>
                 <ThemeCodeBlock className="language-bash">
                     git log
                 </ThemeCodeBlock>
-
                 <p>Vizualize no GitHub:</p>
                 <ThemeCodeBlock className="language-bash">
                     gh repo view --web
@@ -338,9 +571,6 @@ export function GitCommit() {
         </div >
     );
 }
-
-
-
 
 // import {NewBranch} from '@site/src/components/InstructionsSite';
 // <!-- Como criar uma nova branch -->
@@ -353,32 +583,26 @@ export function NewBranch() {
                 <ThemeCodeBlock className="language-bash">
                     git status
                 </ThemeCodeBlock>
-
                 <p>Crie uma nova branch:</p>
                 <ThemeCodeBlock className="language-bash">
                     git branch new-feature
                 </ThemeCodeBlock>
-
                 <p>Altere para a nova branch:</p>
                 <ThemeCodeBlock className="language-bash">
                     git checkout new-feature
                 </ThemeCodeBlock>
-
                 <p>Mostra as branches:</p>
                 <ThemeCodeBlock className="language-bash">
                     git branch
                 </ThemeCodeBlock>
-
                 <p>Envie a nova branch para o repositório remoto:</p>
                 <ThemeCodeBlock className="language-bash">
                     git push --set-upstream origin new-feature
                 </ThemeCodeBlock>
-
                 <p>Compara as branches:</p>
                 <ThemeCodeBlock className="language-bash">
                     git diff main new-feature
                 </ThemeCodeBlock>
-
                 <p>Retorna para a branch principal:</p>
                 <ThemeCodeBlock className="language-bash">
                     git checkout main
